@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Snake</h1>
+
+    <section id="login" class="card">
+      <p>Pick a username to start playing.</p>
+      <form id="login-form">
+        <input id="username" maxlength="20" placeholder="Your username" autocomplete="off" required>
+        <button type="submit">Play</button>
+      </form>
+    </section>
+
+    <section id="game" class="card hidden">
+      <div class="bar">
+        <span>Player: <strong id="player"></strong></span>
+        <span>Score: <strong id="score">0</strong></span>
+      </div>
+      <canvas id="board" width="400" height="400"></canvas>
+      <p id="message">Press an arrow key (or swipe) to start.</p>
+      <div class="buttons">
+        <button id="restart" class="hidden">Play again</button>
+        <button id="change-name" class="secondary">Change name</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Leaderboard</h2>
+      <ol id="leaderboard"><li>Loading…</li></ol>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
