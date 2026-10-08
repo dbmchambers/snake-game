@@ -136,21 +136,63 @@ function tick() {
 async function gameOver() {
   stop();
   over = true;
-  messageEl.textContent = `Game over! You scored ${score}.`;
+  messageEl.textContent = `Game over! You ate ${score} momo${score === 1 ? "" : "s"}.`;
   restartBtn.classList.remove('hidden');
   await saveScore(username, score);
   loadLeaderboard();
 }
 
+// Himalayan backdrop: night sky, faint snow-capped peaks along the bottom
+function drawBackdrop() {
+  const W = canvas.width, H = canvas.height;
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#0a1a3f');
+  sky.addColorStop(1, '#14306b');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  const peaks = [[0, 0.78], [0.12, 0.6], [0.22, 0.72], [0.38, 0.5], [0.5, 0.66],
+    [0.63, 0.45], [0.78, 0.68], [0.9, 0.56], [1, 0.74]];
+  ctx.fillStyle = 'rgba(255,255,255,0.07)';
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  peaks.forEach(([x, y]) => ctx.lineTo(x * W, y * H));
+  ctx.lineTo(W, H);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawMomo(x, y) {
+  const cx = x * CELL + CELL / 2, cy = y * CELL + CELL / 2 + 2;
+  ctx.fillStyle = '#fdf6e3';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, CELL / 2 - 2, CELL / 2 - 5, 0, 0, Math.PI * 2);
+  ctx.arc(cx, cy - 4, 3, 0, Math.PI * 2);
+  ctx.fill();
+  // Pleats
+  ctx.strokeStyle = '#d6c7a1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx - 4, cy - 1); ctx.lineTo(cx, cy - 5);
+  ctx.moveTo(cx + 4, cy - 1); ctx.lineTo(cx, cy - 5);
+  ctx.stroke();
+}
+
 function draw() {
-  ctx.fillStyle = '#020617';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#f87171';
-  ctx.fillRect(food.x * CELL + 2, food.y * CELL + 2, CELL - 4, CELL - 4);
+  drawBackdrop();
+  drawMomo(food.x, food.y);
+  // Snake in Nepal flag colours: crimson body with a blue border
   snake.forEach((p, i) => {
-    ctx.fillStyle = i === 0 ? '#86efac' : '#22c55e';
-    ctx.fillRect(p.x * CELL + 1, p.y * CELL + 1, CELL - 2, CELL - 2);
+    ctx.fillStyle = '#003893';
+    ctx.fillRect(p.x * CELL, p.y * CELL, CELL, CELL);
+    ctx.fillStyle = i === 0 ? '#ff3b5c' : '#dc143c';
+    ctx.fillRect(p.x * CELL + 2, p.y * CELL + 2, CELL - 4, CELL - 4);
   });
+  // Eyes on the head
+  const h = snake[0];
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(h.x * CELL + 5, h.y * CELL + 5, 3, 3);
+  ctx.fillRect(h.x * CELL + CELL - 8, h.y * CELL + 5, 3, 3);
 }
 
 function turn(x, y) {
